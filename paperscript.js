@@ -7,6 +7,8 @@ var d = 30;
 var i = 0;
 var speed = 0.05;
 
+var running = true;
+
 var testGear = new Gear(view.center, 20, 120, 10, 20);
 testGear.strokeColor = 'green';
 
@@ -38,9 +40,8 @@ var newStrokeWidth = path.strokeWidth;
 
 var start = view.center;
 
-var timer = 0;
-
 //every frame
+//TODO: make this event driven for UI elements
 function onFrame(event) {
 
     //check if stroke color changed
@@ -74,29 +75,27 @@ function onFrame(event) {
     d = $('#pen-distance-slider').val() / 100 * innerRadius;
     speed = $('#speed-slider').val() * 0.035 - 0.025;
 
+    if(running) {
+        //calculate location of next spiro point
+        var n = 10;
+        for (var l = 0; l < n; l++) {
+            x = (outerRadius - innerRadius) * Math.cos(i) + d * Math.cos(((outerRadius - innerRadius) / innerRadius) * i);
+            y = (outerRadius - innerRadius) * Math.sin(i) - d * Math.sin(((outerRadius - innerRadius) / innerRadius) * i);
+            path.lineTo(start + [x, y]);
 
+            penPoint.position = view.center + new Point(x, y);
 
+            //update the inner gear
+            innerGear.position = view.center + new Point((outerRadius - innerRadius) * Math.cos(i), (outerRadius - innerRadius) * Math.sin(i));
+            innerGearCenter.position = innerGear.bounds.center;
+            penLine.firstSegment.point = innerGear.bounds.center;
+            var ix = innerGear.bounds.center.x + innerRadius * Math.cos(((outerRadius - innerRadius) / innerRadius) * i);
+            var iy = innerGear.bounds.center.y - innerRadius * Math.sin(((outerRadius - innerRadius) / innerRadius) * i);
+            penLine.lastSegment.point = new Point(ix, iy);
 
-    //calculate location of next spiro point
-    var n = 10;
-    for (var l = 0; l < n; l++) {
-        x = (outerRadius - innerRadius) * Math.cos(i) + d * Math.cos(((outerRadius - innerRadius) / innerRadius) * i);
-        y = (outerRadius - innerRadius) * Math.sin(i) - d * Math.sin(((outerRadius - innerRadius) / innerRadius) * i);
-        path.lineTo(start + [x, y]);
-
-        penPoint.position = view.center + new Point(x, y);
-
-        //update the inner gear
-        innerGear.position = view.center + new Point((outerRadius - innerRadius) * Math.cos(i), (outerRadius - innerRadius) * Math.sin(i));
-        innerGearCenter.position = innerGear.bounds.center;
-        penLine.firstSegment.point = innerGear.bounds.center;
-        var ix = innerGear.bounds.center.x + innerRadius * Math.cos(((outerRadius - innerRadius) / innerRadius) * i);
-        var iy = innerGear.bounds.center.y - innerRadius * Math.sin(((outerRadius - innerRadius) / innerRadius) * i);
-        penLine.lastSegment.point = new Point(ix, iy);
-
-        i -= speed / n;
+            i -= speed / n;
+        }
     }
-
 }
 
 //clear pattern
@@ -115,7 +114,7 @@ function onResize(event) {
 //clear screen
 $('#clear-button').click(clearScreen);
 function clearScreen() {
-    project.clear();
+    path.clear();
 }
 
 //turn export into a url?
@@ -135,6 +134,10 @@ $('#export-button').click(function() {
         data: 'data:image/svg+xml;base64,' + btoa(svg),
         filename: 'export.svg'
     });
+});
+
+$('#play-button').click(function() {
+    running = !running;
 });
 
 //color picker
