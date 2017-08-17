@@ -78,29 +78,13 @@
                                     </p>
 
                                     <p>
-                                        <button type="button" id="clear-button" class="btn btn-default">Clear screen</button>
+                                        <button type="button" id="clear-button" class="btn btn-default">Clear</button>
                                     </p>
 
-                                    <form class="form-inline">
 
-                                        <!--<label class="sr-only" for="inlineFormInputGroup">filename</label>-->
-                                        <div class="input-group mb-2 mr-sm-2 mb-sm-0">
-                                            <input type="text" id="filename" maxlength="30" class="form-control" id="inlineFormInputGroup" placeholder="filename">
-                                            <div class="input-group-addon">.png</div>
-                                        </div>
-
-                                        <button type="button" id="download-button" class="btn btn-default">Save</button>
-                                    </form>
-
-
-                                    <!--<p>-->
-
-                                        <!--<button type="button" id="download-button" class="btn btn-default">Download PNG</button>-->
-                                    <!--</p>-->
 
                                     
                                         <div class='sliders'>
-<br><br>
                                     
 <!--                                         <label for=outer-gear-teeth-slider>Outer Gear Teeth</label> -->
                                         <p>Outer Gear Teeth</p>
@@ -116,6 +100,11 @@
 <!--                                    <label for=pen-distance-slider>Pen Distance</label> -->
                                         <p>Pen Distance (percent of radius)</p>    
                                         <input type="range" id="pen-distance-slider" min="0" max="100" step="1" value="50">
+
+
+                                            <p>Pen Color</p>
+                                            <input type='text' id="colorpicker" />
+                                            <br><br>
                                     
 <!--                                     <label for=pen-width-slider>Pen Width</label> -->
                                         <p>Pen Width</p>
@@ -124,11 +113,7 @@
                                         <p>Speed</p>
                                         <input type="range" id="speed-slider" min="1" max="15" value="3">
                                             
-                                            
-                                        <br><br>    
-                                            
-                                        <input type='text' id="colorpicker" />
-                                    
+
 
                                     <!-- make fancy range/sliders happen -->
                                     <script>
@@ -136,6 +121,19 @@
                                     </script>
 
                                 </div>
+<br><br><br>
+                                    <p>
+                                    <form class="form-inline">
+
+                                        <!--<label class="sr-only" for="inlineFormInputGroup">filename</label>-->
+                                        <div class="input-group mb-2 mr-sm-2 mb-sm-0">
+                                            <input type="text" id="filename" maxlength="30" class="form-control" id="inlineFormInputGroup" placeholder="filename">
+                                            <div class="input-group-addon">.png</div>
+                                        </div>
+
+                                        <button type="button" id="download-button" class="btn btn-default">Save</button>
+                                    </form>
+                                    </p>
                             
                             </div>
                                 
