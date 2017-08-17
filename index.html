@@ -13,11 +13,21 @@
     <!-- Paper.js -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/paper.js/0.11.4/paper-full.min.js"></script>
 
+    <!-- Load the Paper.js library -->
+    <!--<script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/paper.js/0.9.18/paper-full.min.js"></script>-->
+
     <!-- Load PaperScript and associate it with myCanvas -->
-    <script type="text/paperscript" src="paperscript.js" canvas="myCanvas"></script>
+    <script type="text/paperscript" src="js/paperscript.js" canvas="myCanvas"></script>
+
+    <!-- Color picker -->
+    <script src='js/spectrum.js'></script>
+
+    <!-- FileSaver and CanvastoBlob for exporting -->
+    <script src="js/canvas-toBlob.js"></script>
+    <script src="js/FileSaver.min.js"></script>
 
     <!-- external javascript file -->
-    <script type='text/javascript' src="script.js"></script>
+    <script type='text/javascript' src="js/script.js"></script>
 
 </head>
 
@@ -71,19 +81,22 @@
                                         <button type="button" id="clear-button" class="btn btn-default">Clear screen</button>
                                     </p>
 
-                                    
-                                    <div class="btn-group">
-                                        <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
-                                            Download
-                                            <span class="caret"></span>
-                                        </button>
-                                        <ul class="dropdown-menu" role="menu">
-                                            <li><a href="#">Download as SVG</a>
-                                            </li>
-                                            <li><a href="#">Download as PNG</a>
-                                            </li>
-                                        </ul>
-                                    </div>
+                                    <form class="form-inline">
+
+                                        <!--<label class="sr-only" for="inlineFormInputGroup">filename</label>-->
+                                        <div class="input-group mb-2 mr-sm-2 mb-sm-0">
+                                            <input type="text" id="filename" maxlength="30" class="form-control" id="inlineFormInputGroup" placeholder="filename">
+                                            <div class="input-group-addon">.png</div>
+                                        </div>
+
+                                        <button type="button" id="download-button" class="btn btn-default">Save</button>
+                                    </form>
+
+
+                                    <!--<p>-->
+
+                                        <!--<button type="button" id="download-button" class="btn btn-default">Download PNG</button>-->
+                                    <!--</p>-->
 
                                     
                                         <div class='sliders'>
@@ -142,11 +155,7 @@
     <!-- rangeinput styling -->
     <link rel="stylesheet" type="text/css" href="css/range.css"/>
 
-    <script src='spectrum.js'></script>
     <link rel='stylesheet' href='css/spectrum.css' />
-
-    <!-- Load the Paper.js library -->
-    <script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/paper.js/0.9.18/paper-full.min.js"></script>
 
 
 
