@@ -6,7 +6,11 @@
     <title>Spirogator</title>
 
     <!-- JQuery -->
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.3.1/jquery.min.js"></script>
+    <script
+            src="https://code.jquery.com/jquery-3.2.1.min.js"
+            integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
+            crossorigin="anonymous">
+    </script>
     <!-- jQuery Tools -->
     <script src="http://cdn.jquerytools.org/1.2.7/full/jquery.tools.min.js"></script>
 
@@ -38,7 +42,7 @@
             <div class="col-md-12 column">
                 <h1>
 				Spirogator
-			</h1> 
+			</h1>
             </div>
         </div>
         <div class="row clearfix">
@@ -59,61 +63,48 @@
                             <a href="#panel-106147" data-toggle="tab">What's Going On?</a>
                         </li>
                     </ul>
+
                     <div class="tab-content">
                         <div class="tab-pane active" id="panel-327424">
-                            <p>
-                                <div class="col-md-8 column">
-                                    <canvas id="myCanvas" width=700% height=700% style="background:white"></canvas>
-                                </div>
+
+                            <br>
+
                                 <div class="col-md-4 column">
-<!--                                     <p id='x'>x</p>
-                                    <p id='y'>y</p> -->
 
                                     <p>
-                                        <button type="button" id="play-button" class="btn btn-default">Play</button>
+                                        <button type="button" id="play-button" class="btn btn-default spaced-out">Go</button>
+
+                                        <button type="button" id="penup-button" class="btn btn-default spaced-out">Pen up</button>
+
+                                        <button type="button" id="clear-button" class="btn btn-default spaced-out">Clear</button>
+
                                     </p>
+                                    <br>
 
-                                    <p>
-                                        <button type="button" id="penup-button" class="btn btn-default">Pen up</button>
-                                    </p>
+                                    <div class='sliders'>
 
-                                    <p>
-                                        <button type="button" id="clear-button" class="btn btn-default">Clear</button>
-                                    </p>
-
-
-
-                                    
-                                        <div class='sliders'>
-                                    
-<!--                                         <label for=outer-gear-teeth-slider>Outer Gear Teeth</label> -->
                                         <p>Outer Gear Teeth</p>
                                         <input type="range" id="outer-gear-teeth-slider" value="120" min="6" max="200">                                
 
-                                    
-<!--                                         <label for=inner-gear-teeth-slider>Inner Gear Teeth</label> -->
+
                                         <p>Inner Gear Teeth</p>
                                         <input type="range" id="inner-gear-teeth-slider" value="70" min="6" max="200">
                                     
 
-                                    
-<!--                                    <label for=pen-distance-slider>Pen Distance</label> -->
                                         <p>Pen Distance (percent of radius)</p>    
                                         <input type="range" id="pen-distance-slider" min="0" max="100" step="1" value="50">
 
 
-                                            <p>Pen Color</p>
-                                            <input type='text' id="colorpicker" />
-                                            <br><br>
-                                    
-<!--                                     <label for=pen-width-slider>Pen Width</label> -->
+                                        <p>Pen Color</p>
+                                        <input type='text' id="colorpicker" />
+
+                                        <br><br>
+
                                         <p>Pen Width</p>
                                         <input type="range" id="pen-width-slider" min="1" max="15" value="2">
 
                                         <p>Speed</p>
                                         <input type="range" id="speed-slider" min="1" max="15" value="3">
-                                            
-
 
                                     <!-- make fancy range/sliders happen -->
                                     <script>
@@ -121,7 +112,7 @@
                                     </script>
 
                                 </div>
-<br><br><br>
+
                                     <p>
                                     <form class="form-inline">
 
@@ -136,23 +127,27 @@
                                     </p>
                             
                             </div>
+
+                            <div class="col-md-2 column"></div>
+                            <div class="col-md-8 column">
+                                <canvas id="myCanvas" width=650% height=650% style="background:white"></canvas>
+                            </div>
                                 
                         </div>
                     </div>
-                    <div class="row clearfix">
-
-                    </div>
                 </div>
             </div>
-            
-            </div>
         </div>
+    </div>
 
     <link href="css/bootstrap.min.css" rel="stylesheet">
+
+    <link href="css/style.css" rel="stylesheet">
 
     <!-- rangeinput styling -->
     <link rel="stylesheet" type="text/css" href="css/range.css"/>
 
+    <!-- color picker -->
     <link rel='stylesheet' href='css/spectrum.css' />
 
 

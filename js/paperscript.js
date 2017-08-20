@@ -1,44 +1,52 @@
 //hypotrochoid variables
 var x = 0;
 var y = 0;
-var outerRadius = 120;
-var innerRadius = 52;
-var d = 30;
+var outerNumTeeth = 120;
+var innerNumTeeth = 70;
+var tooth_w = 10;
+var tooth_h = 5;
+var outerRingWidth = 20;
+var d;
 var i = 0;
+var toothSteps = 0;
 var speed = 0.05;
 
-var running = true;
+var outerStroke = new Color(0.3);
+var outerFill = new Color(0.25, 0.5);
+var innerStroke = new Color(0.5);
+var innerFill = new Color(0.25, 0.25);
+
+
+var running = false;
 var penDown = true;
+var changed = false;
 
-var testGear = new Gear(view.center, 20, 120, 10, 20);
-testGear.strokeColor = 'green';
+var testGear = new OuterGear(view.center, outerNumTeeth, tooth_w, tooth_h, outerRingWidth, outerStroke, outerFill);
+var innerTestGear = new Gear(view.center, innerNumTeeth, tooth_w, tooth_h, innerStroke, innerFill);
+innerTestGear.position = new Point(view.center.x + testGear.computedRadius - innerTestGear.computedRadius, view.center.y);
 
-//outer gear
-var outerGear = new Path.Circle(view.center, outerRadius);
-outerGear.strokeColor = 'black';
-
-//inner gear
-var innerGear = new Path.Circle(view.center, innerRadius);
-innerGear.strokeColor = 'blue';
+var outerRadius = numTeethToRadius(outerNumTeeth, tooth_w, tooth_h);
+var innerRadius = numTeethToRadius(innerNumTeeth, tooth_w, tooth_h);
 
 //inner gear center point
-var innerGearCenter = new Path.Circle(innerGear.bounds.center, 3);
-innerGearCenter.fillColor = 'blue';
+var innerGearCenter = new Path.Circle(innerTestGear.bounds.center, 3);
+innerGearCenter.fillColor = new Color(0, 0.5);
 
 //hole for pen
-var penPoint = new Path.Circle(view.center, 3);
-penPoint.fillColor = 'red';
+
+d = 0.5 * innerTestGear.computedRadius;
+var penPoint = new Path.Circle(new Point(innerTestGear.bounds.center.x + d, view.center.y), 3);
+penPoint.fillColor = new Color(255, 0, 0, 0.5);
 
 //radius line through pen hole
 var penLine = new Path();
-penLine.strokeColor = 'red';
-penLine.moveTo(innerGear.bounds.center);
-penLine.lineTo(innerGear.bounds.center.x + innerRadius, innerGear.bounds.center.y);
+penLine.strokeColor = 'purple';
+penLine.moveTo(innerTestGear.bounds.center);
+penLine.lineTo(innerTestGear.bounds.center.x + numTeethToRadius(innerNumTeeth, tooth_w, tooth_h), innerTestGear.bounds.center.y);
 
 var gearGroup = new Group();
 gearGroup.addChild(testGear);
-gearGroup.addChild(innerGear);
-gearGroup.addChild(outerGear);
+gearGroup.addChild(innerTestGear);
 gearGroup.addChild(innerGearCenter);
 gearGroup.addChild(penPoint);
 gearGroup.addChild(penLine);
@@ -65,15 +73,15 @@ function addToPatternGroup() {
 
 //do every frame
 function onFrame(event) {
-
     //check if stroke color changed
+    //note: this runs every frame rather than being event driven due to onChange only firing on mouse release
+    //there might be a way to deal with this (oninput?) but I haven't found a cross-browser way yet
     if (path.strokeColor !== newColor) {
         var width = path.strokeWidth;
         addToPatternGroup();
         path.strokeCap = 'round';
         path.strokeWidth = width;
         path.strokeColor = newColor;
-        //console.log("color changed");
     }
     newColor = path.strokeColor;
 
@@ -85,41 +93,128 @@ function onFrame(event) {
         path.strokeCap = 'round';
         path.strokeColor = color;
         path.strokeWidth = newStrokeWidth;
-        //console.log("stroke weight changed");
     }
     newStrokeWidth = path.strokeWidth;
 
-    //update number of teeth, pen distance, speed
-    outerRadius = $('#outer-gear-teeth-slider').val();
-    outerGear.scale(outerRadius * 2.0 / outerGear.bounds.width);
-    innerRadius = $('#inner-gear-teeth-slider').val();
-    innerGear.scale(innerRadius * 2.0 / innerGear.bounds.width);
-    d = $('#pen-distance-slider').val() / 100 * innerRadius;
+    var outerSetting = parseInt($('#outer-gear-teeth-slider').val());
+    var innerSetting = parseInt($('#inner-gear-teeth-slider').val());
+
+    var innerOuterChanged = innerLarger != (innerSetting > outerSetting);
+    var innerLarger = innerSetting > outerSetting;
+    console.log(innerLarger);
+    console.log(outerSetting);
+    console.log(innerSetting);
+    console.log(outerNumTeeth);
+    console.log(innerNumTeeth);
+
+    if((innerSetting != innerNumTeeth || outerSetting != outerNumTeeth)) {
+
+        //update number of teeth, pen distance, speed
+        if (outerNumTeeth != outerSetting || innerOuterChanged) {
+            console.log("changing outer gear");
+            outerNumTeeth = outerSetting;
+            testGear.remove();
+            if (innerLarger) { //turn it into an inner gear
+                testGear = new Gear(view.center, outerNumTeeth, tooth_w, tooth_h, outerStroke, outerFill);
+            }
+            else {
+                testGear = new OuterGear(view.center, outerNumTeeth, tooth_w, tooth_h, outerRingWidth, outerStroke, outerFill);
+            }
+            gearGroup.addChild(testGear);
+            outerRadius = numTeethToRadius(outerNumTeeth, tooth_w, tooth_h);
+        }
+
+        if (innerNumTeeth != innerSetting || innerOuterChanged) {
+            console.log("changing inner gear");
+            innerNumTeeth = innerSetting;
+            innerTestGear.remove();
+            if (innerLarger) { //turn it into an outer gear
+                innerTestGear = new OuterGear(view.center, innerNumTeeth, tooth_w, tooth_h, outerRingWidth, innerStroke, innerFill);
+            }
+            else {
+                innerTestGear = new Gear(view.center, innerNumTeeth, tooth_w, tooth_h, innerStroke, innerFill);
+            }
+            gearGroup.addChild(innerTestGear);
+            innerRadius = numTeethToRadius(innerNumTeeth, tooth_w, tooth_h);
+            updateInnerGear();
+        }
+    }
+
+    d = $('#pen-distance-slider').val() / 100.0 * innerRadius;
     speed = $('#speed-slider').val() * 0.035 - 0.025;
 
     if(running) {
+        updateStep();
+    }
+
+
+//numberOfPetals = lcm(outer.num_teeth, inner.num_teeth)/min(outer.num_teeth, inner.num_teeth);
+//numberOfTurns =  lcm(outer.num_teeth, inner.num_teeth)/max(outer.num_teeth, inner.num_teeth);
+
+
+}
+
+function updateStep() {
 
         var n = 10;
+        //compute location of next spiro points within outer circle
         for (var l = 0; l < n; l++) {
-            //calculate location of next spiro point
-            x = (outerRadius - innerRadius) * Math.cos(i) + d * Math.cos(((outerRadius - innerRadius) / innerRadius) * i);
-            y = (outerRadius - innerRadius) * Math.sin(i) - d * Math.sin(((outerRadius - innerRadius) / innerRadius) * i);
+            //angle inner gear is rotated to
+            var innerAngle = i * ((outerNumTeeth - innerNumTeeth) / innerNumTeeth);
+
+            //coordinates of center of inner circle
+            var outerX = (outerRadius - innerRadius) * Math.cos(i);
+            var outerY = (outerRadius - innerRadius) * Math.sin(i);
+
+            //coordinates of pen hole inside inner circle
+            var innerX = d * Math.cos(innerAngle)
+            var innerY = -1.0 * d * Math.sin(innerAngle);
+            x = outerX + innerX;
+            y = outerY + innerY;
             if(penDown) {
                 path.lineTo(start + [x, y]);
             }
 
-            //update the inner gear
+            //updateInnerGear
             penPoint.position = view.center + new Point(x, y);
-            innerGear.position = view.center + new Point((outerRadius - innerRadius) * Math.cos(i), (outerRadius - innerRadius) * Math.sin(i));
-            innerGearCenter.position = innerGear.bounds.center;
-            penLine.firstSegment.point = innerGear.bounds.center;
-            var ix = innerGear.bounds.center.x + innerRadius * Math.cos(((outerRadius - innerRadius) / innerRadius) * i);
-            var iy = innerGear.bounds.center.y - innerRadius * Math.sin(((outerRadius - innerRadius) / innerRadius) * i);
+            innerTestGear.position = view.center + new Point((outerRadius - innerRadius) * Math.cos(i), (outerRadius - innerRadius) * Math.sin(i));
+            innerGearCenter.position = innerTestGear.bounds.center;
+            innerTestGear.rotation = toDegrees(-innerAngle);
+            penLine.firstSegment.point = innerTestGear.bounds.center;
+            var ix = innerTestGear.bounds.center.x + innerRadius * Math.cos(innerAngle);
+            var iy = innerTestGear.bounds.center.y - innerRadius * Math.sin(innerAngle);
             penLine.lastSegment.point = new Point(ix, iy);
 
             i -= speed / n;
         }
-    }
+}
+
+function updateInnerGear() {
+    var innerAngle = i * ((outerNumTeeth - innerNumTeeth) / innerNumTeeth);
+
+    //coordinates of center of inner circle
+    var outerX = (outerRadius - innerRadius) * Math.cos(i);
+    var outerY = (outerRadius - innerRadius) * Math.sin(i);
+
+    //coordinates of pen hole inside inner circle
+    var innerX = d * Math.cos(innerAngle)
+    var innerY = -1.0 * d * Math.sin(innerAngle);
+    x = outerX + innerX;
+    y = outerY + innerY;
+
+    //updateInnerGear
+    penPoint.position = view.center + new Point(x, y);
+    innerTestGear.position = view.center + new Point((outerRadius - innerRadius) * Math.cos(i), (outerRadius - innerRadius) * Math.sin(i));
+    innerGearCenter.position = innerTestGear.bounds.center;
+    //innerTestGear.rotation = toDegrees(-innerAngle);
+    penLine.firstSegment.point = innerTestGear.bounds.center;
+    var ix = innerTestGear.bounds.center.x + innerRadius * Math.cos(innerAngle);
+    var iy = innerTestGear.bounds.center.y - innerRadius * Math.sin(innerAngle);
+    penLine.lastSegment.point = new Point(ix, iy);
+}
+
+function toDegrees(angle) {
+    return angle * 180.0 / Math.PI;
 }
 
 //whenever window is resized, recenter the path
@@ -180,11 +275,31 @@ $('#download-button').click(function() {
 });
 
 $('#play-button').click(function() {
-    running = !running;
+    var text = $('#play-button').text();
+    if(text === "Stop") {
+        running = false;
+        $('#play-button').text("Go");
+    }
+    else {
+        running = true;
+        $('#play-button').text("Stop");
+    }
 });
 
 $('#penup-button').click(function() {
-    penDown = !penDown;
+    var text = $('#penup-button').text();
+    if(text === "Pen up") { //switch to pen up
+        penDown = false;
+        $('#penup-button').text("Pen down");
+    }
+    else {
+        penDown = true;
+        $('#penup-button').text("Pen up");
+        addToPatternGroup();
+        path.strokeCap = 'round';
+        path.strokeWidth = $('#pen-width-slider').val();
+        path.strokeColor = newColor;
+    }
 });
 
 //color picker
@@ -235,6 +350,20 @@ $(document).ready(function() {
     });
 });
 
+function radiusToNumTeeth(radius, tooth_w, tooth_h) {
+    //angle (that is fraction of full circle corresponding to location of tooth on edge) = 2 * arcsin (chord length / 2 * radius of big circle)
+    var tooth_angle = 2.0 * Math.asin(tooth_w/(2.0*radius));
+    //make sure tooth width divides evenly, change size of circle to fit number of teeth requested
+    var num_teeth = round(2.0*PI / tooth_angle);
+    return num_teeth;
+}
+
+function numTeethToRadius(num_teeth, tooth_w, tooth_h) {
+    var tooth_angle = 2.0 * Math.PI / num_teeth;
+    var radius = 0.5 * (tooth_w / Math.sin(tooth_angle / 2.0)); //2r = chord length / sin(angle / 2)
+    return radius;
+}
+
 function fromPolar(x, y, radius, theta) {
     return new Point(x, y) + new Point(radius * Math.cos(theta), radius * Math.sin(theta));
 }
@@ -243,28 +372,43 @@ function fromPolarAtOrigin(radius, theta) {
     return new Point(radius * Math.cos(theta), radius * Math.sin(theta));
 }
 
-function Gear(center, num_teeth, radius, tooth_w, tooth_h) {
+function lcm(a, b) {
+    return a * b / gcd(a, b);
+}
+
+function gcd(a, b) {
+    if ((a % b) == 0) return b;
+    else return gcd(b, a % b);
+}
+
+function OuterGear(center, num_teeth, tooth_w, tooth_h, ring_width, strokeColor, fillColor) {
+    var gear = new Gear(center, num_teeth, tooth_w, tooth_h);
+    var circle = new Path.Circle(center, gear.computedRadius + ring_width);
+    var outerGear = new CompoundPath();
+    outerGear.addChild(circle);
+    outerGear.addChild(gear);
+    outerGear.strokeColor = strokeColor;
+    outerGear.fillColor = fillColor;
+    outerGear.num_teeth = gear.num_teeth;
+    outerGear.computedRadius = gear.computedRadius;
+    outerGear.applyMatrix = false;
+    outerGear.fillRule = 'evenodd';
+    return outerGear;
+}
+
+function Gear(center, num_teeth, tooth_w, tooth_h, strokeColor, fillColor) {
 
     this.center = center.clone();
     this.num_teeth = num_teeth;
-    this.radius = radius;
     this.tooth_w = tooth_w;
     this.tooth_h = tooth_h;
 
     var gearPath = new Path();
 
-    /*
-     if set by radius
-     //angle (that is fraction of full circle corresponding to location of tooth on edge) = 2 * arcsin (chord length / 2 * radius of big circle)
-     //tooth_angle = 2 * Math.asin(tooth_w/(2.0*radius));
-     //make sure tooth width divides evenly, change size of circle to fit number of teeth requested
-     //num_teeth = round(2*PI / tooth_angle);
-     */
-
     //if(num_teeth < SMALLEST_NUM_TEETH) num_teeth = SMALLEST_NUM_TEETH;
 
     var tooth_angle = 2.0 * Math.PI / num_teeth;
-    this.radius = 0.5*(tooth_w / Math.sin(tooth_angle / 2.0)); //2r = chord length / sin(angle / 2)
+    var radius = 0.5*(tooth_w / Math.sin(tooth_angle / 2.0)); //2r = chord length / sin(angle / 2)
 
     var sagitta = radius*(1-Math.cos(tooth_angle/2)); //distance between center of chord and highest point of arc
 
@@ -303,85 +447,12 @@ function Gear(center, num_teeth, radius, tooth_w, tooth_h) {
 
         delta += tooth_angle;
     }
+    //gearPath.lineTo(center); //debugging
+    gearPath.strokeColor = strokeColor;
+    gearPath.fillColor = fillColor;
+    gearPath.num_teeth = this.num_teeth;
+    gearPath.computedRadius = radius;
+    gearPath.applyMatrix = false;
 
     return gearPath;
-
-
-
-    //gearPath.moveTo(fromPolar(this.center.x, this.center.y, 0, this.radius-tooth_h));
-
-    //var bigCircle = new Path.Circle(new Point(this.center.x+this.radius-this.tooth_w, this.center.y), 3);
-    //bigCircle.fillColor = 'red';
-    //var points = [];
-    //points.push(new Path.Circle(fromPolar(this.center.x, this.center.y, 0, this.radius), 3));
-    //points[points.length-1].fillColor = 'black';
-
-
-    //console.log(fromPolar(0, 0, Math.PI/3.0, 100.0).x);
-    //var delta = Math.PI/32;
-    //for(var i=delta;i<2.0*Math.PI;i+=4*delta) {
-    //    //points.push(new Path.Circle(fromPolar(0, 0, i, 100), 3));
-    //    //points[points.length-1].fillColor = 'black';
-    //    //console.log(i + " " + points[points.length-1].bounds.center.x);
-    //   // console.log(fromPolar(this.center.x, this.center.y, this.radius + this.tooth_w, i).x);
-    //   // points.push(new Path.Circle(fromPolar(this.center.x, this.center.y, i, this.radius + this.tooth_w), 3));
-    //   // points[points.length-1].fillColor = 'black';
-    //   // points.push(new Path.Circle(fromPolar(this.center.x, this.center.y, i + delta, this.radius - this.tooth_w), 3));
-    //   // points[points.length-1].fillColor = 'black';
-    //   // gearPath.curveTo(fromPolar(this.center.x, this.center.y, i, this.radius + this.tooth_h), fromPolar(this.center.x, this.center.y, i+delta, this.radius));
-    //   // gearPath.curveTo(fromPolar(this.center.x, this.center.y, i+2*delta, this.radius - this.tooth_h), fromPolar(this.center.x, this.center.y, i+3*delta, this.radius));
-    //    gearPath.cubicCurveTo(fromPolar(this.center.x, this.center.y, i+delta/2.0, this.radius - this.tooth_h/2.0), fromPolar(this.center.x, this.center.y, i+delta*1.5, this.radius + this.tooth_h/2.0), fromPolar(this.center.x, this.center.y, i+2*delta, this.radius + this.tooth_h));
-    //    gearPath.cubicCurveTo(fromPolar(this.center.x, this.center.y, i+delta*2.5, this.radius + this.tooth_h/2.0), fromPolar(this.center.x, this.center.y, i+delta*3.5, this.radius - this.tooth_h/2.0), fromPolar(this.center.x, this.center.y, i+4*delta, this.radius - this.tooth_h));
-    //}
-    //return gearPath;
-
-    //surface.beginShape();
-
-    /*
-    if set by radius
-    //angle (that is fraction of full circle corresponding to location of tooth on edge) = 2 * arcsin (chord length / 2 * radius of big circle)
-    //tooth_angle = 2 * Math.asin(tooth_w/(2.0*radius));
-    //make sure tooth width divides evenly, change size of circle to fit number of teeth requested
-    //num_teeth = round(2*PI / tooth_angle);
-    */
-
-    //if(num_teeth < SMALLEST_NUM_TEETH) num_teeth = SMALLEST_NUM_TEETH;
-
-//    var tooth_angle = 2.0 * PI / num_teeth;
-//    this.radius = 0.5*(tooth_w / Math.sin(tooth_angle / 2.0)); //2r = chord length / sin(angle / 2)
-//
-//  var sagitta = radius*(1-Math.cos(tooth_angle/2)); //distance between center of chord and highest point of arc
-////    surface.vertex(toArray2d(fromPolar(x, y, r, theta)));
-//    var delta = theta + tooth_angle;
-//    for (var i=tooth_angle;i < 2.0*PI + 0.0001; i+=tooth_angle) {
-//        if(delta > 2.0*PI) { delta = delta - 2*PI; }
-//        var angle_a = delta-tooth_angle;
-//        var angle_b = delta-0.5*tooth_angle;
-//        var angle_c = delta;
-//
-//        PVector a = center + fromPolar(radius, angle_a);
-//        PVector b = center + fromPolar(radius, angle_b);
-//        PVector c = center + fromPolar(radius, angle_c);
-//
-//        // build the normal vector for the chord between the tooth endpoints
-//        var n = c - b;
-//        n = n.normalize();
-//        n= n.rotate(PI/2);
-//
-//        //find circle tangent to the sagitta to guide outer tooth as though it were converging on radius
-//        var guideCircle = center + (n * 2.0 * (radius-sagitta));
-//
-//        var a_inside = center + polarPVector(r - tooth_h, angle_a);
-//        var b_inside = center + polarPVector(r - tooth_h, angle_b);
-//
-//        var a_outside = guideCircle + fromPolar(radius - tooth_h, PI+angle_c); // note that angle_a/angle_b are swapped coming from the toCircle
-//        var b_outside = guideCircle + fromPolar(radius - tooth_h, PI+angle_b);
-//
-//        surface.bezierVertex(a_inside.x, a_inside.y, b_inside.x, b_inside.y, b.x, b.y);
-//        surface.bezierVertex(a_outside.x, a_outside.y, b_outside.x, b_outside.y, c.x, c.y);
-//
-//        delta += tooth_angle;
-//    }
-////      surface.vertex(toArray2d(fromPolar(x, y, r, theta)));
-//    surface.endShape();
 }
