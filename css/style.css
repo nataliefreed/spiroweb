@@ -1,3 +1,11 @@
-.spaced-out{
-    margin: 10px;
+.spacing-right{
+    margin-right: 10px;
+}
+
+.spacing-left{
+    margin-left: 10px;
+}
+
+.spacing-top{
+    margin-top: 10px;
 }

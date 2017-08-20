@@ -11,11 +11,14 @@ var i = 0;
 var toothSteps = 0;
 var speed = 0.05;
 
+var numTurnsRun = 0;
+
 var outerStroke = new Color(0.3);
 var outerFill = new Color(0.25, 0.5);
 var innerStroke = new Color(0.5);
-var innerFill = new Color(0.25, 0.25);
+var innerFill = new Color(0.25, 0.1);
 
+var cleared = false;
 
 var running = false;
 var penDown = true;
@@ -65,23 +68,35 @@ var drawing = new Group();
 var start = view.center;
 
 function addToPatternGroup() {
-    var raster = path.rasterize();
-    drawing.addChild(raster);
+    var rasterPath = path.rasterize();
+    drawing.addChild(rasterPath);
+    var rasterDrawing = drawing.rasterize();
+    drawing.remove();
+    drawing = new Group();
+    drawing.addChild(rasterDrawing);
+
+    var width = path.strokeWidth;
     path.remove();
     path = new Path();
+    path.strokeCap = 'round';
+    path.strokeWidth = width;
+    path.strokeColor = newColor;
 }
+
+var numberOfPetals;
+var numberOfTurns;
+updatePetalsAndTurns();
 
 //do every frame
 function onFrame(event) {
+
+    changed = false;
+
     //check if stroke color changed
     //note: this runs every frame rather than being event driven due to onChange only firing on mouse release
     //there might be a way to deal with this (oninput?) but I haven't found a cross-browser way yet
     if (path.strokeColor !== newColor) {
-        var width = path.strokeWidth;
         addToPatternGroup();
-        path.strokeCap = 'round';
-        path.strokeWidth = width;
-        path.strokeColor = newColor;
     }
     newColor = path.strokeColor;
 
@@ -101,13 +116,10 @@ function onFrame(event) {
 
     var innerOuterChanged = innerLarger != (innerSetting > outerSetting);
     var innerLarger = innerSetting > outerSetting;
-    console.log(innerLarger);
-    console.log(outerSetting);
-    console.log(innerSetting);
-    console.log(outerNumTeeth);
-    console.log(innerNumTeeth);
 
     if((innerSetting != innerNumTeeth || outerSetting != outerNumTeeth)) {
+
+        changed = true;
 
         //update number of teeth, pen distance, speed
         if (outerNumTeeth != outerSetting || innerOuterChanged) {
@@ -140,18 +152,22 @@ function onFrame(event) {
         }
     }
 
-    d = $('#pen-distance-slider').val() / 100.0 * innerRadius;
+    //if(cleared) {
+    //    changed = true;
+    //    //i = i % (2.0*Math.PI);
+    //}
+
+    var newPenDist = $('#pen-distance-slider').val() / 100.0 * innerRadius;
+    if(d != newPenDist) {
+        changed = true;
+        d = newPenDist;
+    }
+
     speed = $('#speed-slider').val() * 0.035 - 0.025;
 
     if(running) {
         updateStep();
     }
-
-
-//numberOfPetals = lcm(outer.num_teeth, inner.num_teeth)/min(outer.num_teeth, inner.num_teeth);
-//numberOfTurns =  lcm(outer.num_teeth, inner.num_teeth)/max(outer.num_teeth, inner.num_teeth);
-
-
 }
 
 function updateStep() {
@@ -187,6 +203,13 @@ function updateStep() {
 
             i -= speed / n;
         }
+
+    //if(!changed && Math.abs(i/(2*Math.PI)) > numberOfTurns) { //if you've made the full shape
+    //    running = false;
+    //    $('#play-button').text("Go");
+    //    i = i % (2.0*Math.PI);
+    //    console.log(i);
+    //}
 }
 
 function updateInnerGear() {
@@ -228,7 +251,7 @@ function clearPattern() {
     path = new Path();
     drawing.removeChildren();
     drawing = new Group();
-    //paper.view.draw();
+    cleared = true;
 };
 
 //clear screen
@@ -273,6 +296,28 @@ $('#download-button').click(function() {
         showAll();
     }
 });
+
+$('#inner-gear-teeth-slider').change(function() {
+    updatePetalsAndTurns();
+});
+
+$('#outer-gear-teeth-slider').change(function() {
+    updatePetalsAndTurns();
+});
+
+$('#pen-distance-slider').change(function() {
+    updatePetalsAndTurns();
+});
+
+function updatePetalsAndTurns() {
+    numberOfPetals = lcm(outerNumTeeth, innerNumTeeth)/Math.min(outerNumTeeth, innerNumTeeth);
+    numberOfTurns =  lcm(outerNumTeeth, innerNumTeeth)/Math.max(outerNumTeeth, innerNumTeeth);
+
+    console.log(numberOfPetals);
+
+    $('#num-petals').text(numberOfPetals);
+    $('#num-turns').text(numberOfTurns);
+}
 
 $('#play-button').click(function() {
     var text = $('#play-button').text();
@@ -377,8 +422,15 @@ function lcm(a, b) {
 }
 
 function gcd(a, b) {
-    if ((a % b) == 0) return b;
-    else return gcd(b, a % b);
+    if(a < b) {
+        return gcd(a, b-a);
+    }
+    else if(b < a) {
+        return gcd(a-b,b);
+    }
+    else{
+        return a;
+    }
 }
 
 function OuterGear(center, num_teeth, tooth_w, tooth_h, ring_width, strokeColor, fillColor) {

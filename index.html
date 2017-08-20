@@ -72,46 +72,13 @@
                                 <div class="col-md-4 column">
 
                                     <p>
-                                        <button type="button" id="play-button" class="btn btn-default spaced-out">Go</button>
+                                        <button type="button" id="play-button" class="btn btn-default spacing-right">Go</button>
 
-                                        <button type="button" id="penup-button" class="btn btn-default spaced-out">Pen up</button>
+                                        <button type="button" id="penup-button" class="btn btn-default spacing-right">Pen up</button>
 
-                                        <button type="button" id="clear-button" class="btn btn-default spaced-out">Clear</button>
+                                        <button type="button" id="clear-button" class="btn btn-default spacing-right">Clear</button>
 
                                     </p>
-                                    <br>
-
-                                    <div class='sliders'>
-
-                                        <p>Outer Gear Teeth</p>
-                                        <input type="range" id="outer-gear-teeth-slider" value="120" min="6" max="200">                                
-
-
-                                        <p>Inner Gear Teeth</p>
-                                        <input type="range" id="inner-gear-teeth-slider" value="70" min="6" max="200">
-                                    
-
-                                        <p>Pen Distance (percent of radius)</p>    
-                                        <input type="range" id="pen-distance-slider" min="0" max="100" step="1" value="50">
-
-
-                                        <p>Pen Color</p>
-                                        <input type='text' id="colorpicker" />
-
-                                        <br><br>
-
-                                        <p>Pen Width</p>
-                                        <input type="range" id="pen-width-slider" min="1" max="15" value="2">
-
-                                        <p>Speed</p>
-                                        <input type="range" id="speed-slider" min="1" max="15" value="3">
-
-                                    <!-- make fancy range/sliders happen -->
-                                    <script>
-                                        $(":range").rangeinput();
-                                    </script>
-
-                                </div>
 
                                     <p>
                                     <form class="form-inline">
@@ -124,6 +91,50 @@
 
                                         <button type="button" id="download-button" class="btn btn-default">Save</button>
                                     </form>
+                                    </p>
+
+                                    <div class='sliders'>
+
+                                        <p>Speed</p>
+                                        <input type="range" id="speed-slider" min="1" max="15" value="3">
+
+
+
+                                        <p>Outer Gear Teeth</p>
+                                        <input type="range" id="outer-gear-teeth-slider" value="120" min="6" max="200">                                
+
+
+                                        <p>Inner Gear Teeth</p>
+                                        <input type="range" id="inner-gear-teeth-slider" value="70" min="6" max="200">
+                                    
+
+                                        <p>Pen Distance (percent of radius)</p>
+                                        <input type="range" id="pen-distance-slider" min="0" max="100" step="1" value="50">
+
+                                        <p>
+                                            <input type='text' id="colorpicker" />
+                                        </p>
+
+                                        <p>Pen Width</p>
+                                        <input type="range" id="pen-width-slider" min="1" max="15" value="2">
+
+
+
+                                    <!-- make fancy range/sliders happen -->
+                                    <script>
+                                        $(":range").rangeinput();
+                                    </script>
+
+                                </div>
+
+
+
+                                    <br>
+                                    <p>
+                                        Number of petals: <span id="num-petals"></span>
+                                    </p>
+                                    <p>
+                                        Number of laps inside outer gear: <span id="num-turns"></span>
                                     </p>
                             
                             </div>
