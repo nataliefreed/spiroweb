@@ -12,7 +12,7 @@
             crossorigin="anonymous">
     </script>
     <!-- jQuery Tools -->
-    <script src="http://cdn.jquerytools.org/1.2.7/full/jquery.tools.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-tools/1.2.7/jquery.tools.min.js"></script>
 
     <!-- Paper.js -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/paper.js/0.11.4/paper-full.min.js"></script>
@@ -95,20 +95,19 @@
 
                                     <div class='sliders'>
 
-                                        <p>Speed</p>
+                                        <p>Speed: </p>
                                         <input type="range" id="speed-slider" min="1" max="15" value="3">
 
 
-
-                                        <p>Outer Gear Teeth</p>
+                                        <p>Outer Gear Teeth: </p>
                                         <input type="range" id="outer-gear-teeth-slider" value="120" min="6" max="200">                                
 
 
-                                        <p>Inner Gear Teeth</p>
-                                        <input type="range" id="inner-gear-teeth-slider" value="70" min="6" max="200">
+                                        <p>Inner Gear Teeth: </p>
+                                        <input type="range" class="labeled-slider" id="inner-gear-teeth-slider" value="70" min="6" max="200">
                                     
 
-                                        <p>Pen Distance (percent of radius)</p>
+                                        <p>Pen Distance (percent of radius): </p>
                                         <input type="range" id="pen-distance-slider" min="0" max="100" step="1" value="50">
 
                                         <p>
@@ -120,7 +119,7 @@
 
 
 
-                                    <!-- make fancy range/sliders happen -->
+                                    <!-- make fancy range/sliders happen -note: no longer working, JQuery version?-->
                                     <script>
                                         $(":range").rangeinput();
                                     </script>
