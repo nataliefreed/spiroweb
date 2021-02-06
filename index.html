@@ -3,6 +3,9 @@
 
 <head>
     <meta charset="utf-8">
+    <!-- responsive viewport meta tag for Bootstrap -->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
     <title>Spirogator</title>
 
     <!-- JQuery -->
@@ -13,6 +16,9 @@
     </script>
     <!-- jQuery Tools -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-tools/1.2.7/jquery.tools.min.js"></script>
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
 
     <!-- Paper.js -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/paper.js/0.11.4/paper-full.min.js"></script>
@@ -37,130 +43,101 @@
 
 <body>
 
-    <div class="container">
-        <div class="row clearfix">
-            <div class="col-md-12 column">
-                <h1>
-				Spirogator
-			</h1>
-            </div>
+<div class="flex-grid">
+
+    <div class="column">
+        <canvas id="myCanvas"></canvas>
+    </div>
+    <div class="column control-panel">
+        <!--<div class="control-panel">-->
+        <div id="play-box">
+
+            <button type="button" id="play-button" class="btn btn-default spacing-right">Go</button>
+
+            <button type="button" id="penup-button" class="btn btn-default spacing-right">Pen up</button>
+
+            <button type="button" id="clear-button" class="btn btn-default spacing-right">Clear</button>
+
+            <p>
+                Number of petals: <span id="num-petals"></span>
+            </p>
+            <p>
+                Number of laps inside outer gear: <span id="num-turns"></span>
+            </p>
         </div>
-        <div class="row clearfix">
-            <div class="col-md-12 column">
-                <div class="tabbable" id="tabs-372701">
-                    <ul class="nav nav-tabs">
-                        <li class="active">
-                            <a href="#panel-327424" data-toggle="tab">Make Drawings</a>
-                        </li>
-                        <li>
-                            <a href="#panel-106147" data-toggle="tab">Make Algorithms</a>
-                        </li>
-                        <li>
-                            <a href="#panel-106147" data-toggle="tab">Make Gears</a>
-                        </li>
 
-                        <li>
-                            <a href="#panel-106147" data-toggle="tab">What's Going On?</a>
-                        </li>
-                    </ul>
+        <div id='sliders'>
 
-                    <div class="tab-content">
-                        <div class="tab-pane active" id="panel-327424">
+                <!--<div class="slider-control">-->
+                    <label for="speed-slider">Speed:</label>
+                    <input type="range" id="speed-slider" min="1" max="15" value="3">
+                <!--</div>-->
 
-                            <br>
+                <!--<div class="slider-control">-->
+                    <label for="outer-gear-teeth-slider">Outer Gear Teeth: </label>
+                    <input type="range" id="outer-gear-teeth-slider" value="120" min="6" max="200">
+                <!--</div>-->
 
-                                <div class="col-md-4 column">
+                <!--<div class="slider-control">-->
+                    <label for="inner-gear-teeth-slider">Inner Gear Teeth: </label>
+                    <input type="range" class="inner-gear-teeth-slider" id="inner-gear-teeth-slider" value="70" min="6" max="200">
+                <!--</div>-->
 
-                                    <p>
-                                        <button type="button" id="play-button" class="btn btn-default spacing-right">Go</button>
+                <!--<div class="slider-control">-->
+                    <label for="pen-distance-slider">Pen Distance (percent of radius): </label>
+                    <input type="range" id="pen-distance-slider" min="0" max="100" step="1" value="50">
+                <!--</div>-->
 
-                                        <button type="button" id="penup-button" class="btn btn-default spacing-right">Pen up</button>
-
-                                        <button type="button" id="clear-button" class="btn btn-default spacing-right">Clear</button>
-
-                                    </p>
-
-                                    <p>
-                                    <form class="form-inline">
-
-                                        <!--<label class="sr-only" for="inlineFormInputGroup">filename</label>-->
-                                        <div class="input-group mb-2 mr-sm-2 mb-sm-0">
-                                            <input type="text" id="filename" maxlength="30" class="form-control" id="inlineFormInputGroup" placeholder="filename">
-                                            <div class="input-group-addon">.png</div>
-                                        </div>
-
-                                        <button type="button" id="download-button" class="btn btn-default">Save</button>
-                                    </form>
-                                    </p>
-
-                                    <div class='sliders'>
-
-                                        <p>Speed: </p>
-                                        <input type="range" id="speed-slider" min="1" max="15" value="3">
+                <!--<input type='text' id="colorpicker" />-->
 
 
-                                        <p>Outer Gear Teeth: </p>
-                                        <input type="range" id="outer-gear-teeth-slider" value="120" min="6" max="200">                                
+                <!--<div class="slider-control">-->
+                    <label for="pen-width-slider">Pen Width</label>
+                    <input type="range" id="pen-width-slider" min="1" max="30" value="2">
+                <!--</div>-->
 
+                <!-- make fancy range/sliders happen -note: no longer working, JQuery version?-->
+                <script>
+                    $(":range").rangeinput();
+                </script>
 
-                                        <p>Inner Gear Teeth: </p>
-                                        <input type="range" class="labeled-slider" id="inner-gear-teeth-slider" value="70" min="6" max="200">
-                                    
-
-                                        <p>Pen Distance (percent of radius): </p>
-                                        <input type="range" id="pen-distance-slider" min="0" max="100" step="1" value="50">
-
-                                        <p>
-                                            <input type='text' id="colorpicker" />
-                                        </p>
-
-                                        <p>Pen Width</p>
-                                        <input type="range" id="pen-width-slider" min="1" max="30" value="2">
-
-
-
-                                    <!-- make fancy range/sliders happen -note: no longer working, JQuery version?-->
-                                    <script>
-                                        $(":range").rangeinput();
-                                    </script>
-
-                                </div>
-
-
-
-                                    <br>
-                                    <p>
-                                        Number of petals: <span id="num-petals"></span>
-                                    </p>
-                                    <p>
-                                        Number of laps inside outer gear: <span id="num-turns"></span>
-                                    </p>
-                            
-                            </div>
-
-                            <div class="col-md-2 column"></div>
-                            <div class="col-md-8 column">
-                                <canvas id="myCanvas" width=650% height=650% style="background:white"></canvas>
-                            </div>
-                                
-                        </div>
-                    </div>
-                </div>
             </div>
-        </div>
-        <div class="row clearfix">
-            <div class="col-md-12 column text-center big-spacing-top">
-                <p>
-                    This project is by Natalie Freed and Paula Hooper, based on our <a href="http://nataliefreed.github.io/spirogator/">desktop version</a> now ported to the web!
-                </p>
-                <p>
-                We are creating curriculum and tools for learning through digital design fabrication.
-                </p>
-            </div>
-        </div>
+
+        <!--<div id="save-box">-->
+            <!--<form class="form-inline">-->
+
+                <!--<label class="sr-only" for="inlineFormInputGroup">filename</label>-->
+                <!--<div class="input-group mb-2 mr-sm-2 mb-sm-0">-->
+                    <!--<input type="text" id="filename" maxlength="30" class="form-control" id="inlineFormInputGroup" placeholder="filename">-->
+                    <!--<div class="input-group-addon">.png</div>-->
+                <!--</div>-->
+
+                <!--<button type="button" id="download-button" class="btn btn-default">Save</button>-->
+        <!--//    </form>-->
+        <!--</div>-->
+    </div>
+        <!--</div>-->
+
+    <!--<div class="flex-grid">-->
+        <!--<div class="column text-center big-spacing-top">-->
+
+        <!--</div>-->
+    <!--</div>-->
+</div>
+
+
+<div id="credits">
+<p>
+    This project is by Natalie Freed and Paula Hooper, based on our <a href="http://nataliefreed.github.io/spirogator/">desktop version</a> now ported to the web!
+</p>
+<p>
+    We are creating curriculum and tools for learning through digital design fabrication.
+</p>
     </div>
 
-    <link href="css/bootstrap.min.css" rel="stylesheet">
+    </div>
+
+    <!--<link href="css/bootstrap.min.css" rel="stylesheet">-->
 
     <link href="css/style.css" rel="stylesheet">
 
@@ -170,7 +147,7 @@
     <!-- color picker -->
     <link rel='stylesheet' href='css/spectrum.css' />
 
-
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/js/bootstrap.bundle.min.js" integrity="sha384-ygbV9kiqUc6oa4msXn9868pTtWMgiQaeYH7/t7LECLbyPA2x65Kgf80OJFdroafW" crossorigin="anonymous"></script>
 
 </body>
 
