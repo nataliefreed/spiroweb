@@ -7,7 +7,8 @@ var tooth_w = 10;
 var tooth_h = 5;
 var outerRingWidth = 20;
 var d;
-var i = 0;
+var rollingAngle = 0;
+var targetRollingAngle = 0;
 var toothSteps = 0;
 var speed = 0.05;
 
@@ -22,7 +23,8 @@ var cleared = false;
 
 var running = false;
 var penDown = true;
-var changed = false;
+var gearsChanged = true;
+var firstRun = true;
 
 var testGear = new OuterGear(view.center, outerNumTeeth, tooth_w, tooth_h, outerRingWidth, outerStroke, outerFill);
 var innerTestGear = new Gear(view.center, innerNumTeeth, tooth_w, tooth_h, innerStroke, innerFill);
@@ -36,7 +38,6 @@ var innerGearCenter = new Path.Circle(innerTestGear.bounds.center, 3);
 innerGearCenter.fillColor = new Color(0, 0.5);
 
 //hole for pen
-
 d = 0.5 * innerTestGear.computedRadius;
 var penPoint = new Path.Circle(new Point(innerTestGear.bounds.center.x + d, view.center.y), 3);
 penPoint.fillColor = new Color(255, 0, 0, 0.5);
@@ -86,11 +87,10 @@ function addToPatternGroup() {
 var numberOfPetals;
 var numberOfTurns;
 updatePetalsAndTurns();
+updateTargetAngle();
 
 //do every frame
 function onFrame(event) {
-
-    changed = false;
 
     //check if stroke color changed
     //note: this runs every frame rather than being event driven due to onChange only firing on mouse release
@@ -117,10 +117,7 @@ function onFrame(event) {
     var innerOuterChanged = innerLarger != (innerSetting > outerSetting);
     var innerLarger = innerSetting > outerSetting;
 
-    if((innerSetting != innerNumTeeth || outerSetting != outerNumTeeth)) {
-
-        changed = true;
-
+    if(innerSetting != innerNumTeeth || outerSetting != outerNumTeeth) {
         //update number of teeth, pen distance, speed
         if (outerNumTeeth != outerSetting || innerOuterChanged) {
             console.log("changing outer gear");
@@ -150,17 +147,19 @@ function onFrame(event) {
             innerRadius = numTeethToRadius(innerNumTeeth, tooth_w, tooth_h);
             updateInnerGear();
         }
+
+        updateTargetAngle();
     }
 
     //if(cleared) {
     //    changed = true;
-    //    //i = i % (2.0*Math.PI);
+    //    //rollingAngle = rollingAngle % (2.0*Math.PI);
     //}
 
     var newPenDist = $('#pen-distance-slider').val() / 100.0 * innerRadius;
     if(d != newPenDist) {
-        changed = true;
         d = newPenDist;
+        updateTargetAngle();
     }
 
     speed = $('#speed-slider').val() * 0.035 - 0.025;
@@ -170,20 +169,27 @@ function onFrame(event) {
     }
 }
 
+function updateTargetAngle() {
+    updatePetalsAndTurns();
+    targetRollingAngle = rollingAngle - 2.0 * Math.PI * numberOfTurns;
+        console.log("turns: ", numberOfTurns);
+        console.log("updating target: ", targetRollingAngle, rollingAngle);
+}
+
 function updateStep() {
 
         var n = 10;
         //compute location of next spiro points within outer circle
         for (var l = 0; l < n; l++) {
             //angle inner gear is rotated to
-            var innerAngle = i * ((outerNumTeeth - innerNumTeeth) / innerNumTeeth);
+            var innerAngle = rollingAngle * ((outerNumTeeth - innerNumTeeth) / innerNumTeeth);
 
             //coordinates of center of inner circle
-            var outerX = (outerRadius - innerRadius) * Math.cos(i);
-            var outerY = (outerRadius - innerRadius) * Math.sin(i);
+            var outerX = (outerRadius - innerRadius) * Math.cos(rollingAngle);
+            var outerY = (outerRadius - innerRadius) * Math.sin(rollingAngle);
 
             //coordinates of pen hole inside inner circle
-            var innerX = d * Math.cos(innerAngle)
+            var innerX = d * Math.cos(innerAngle);
             var innerY = -1.0 * d * Math.sin(innerAngle);
             x = outerX + innerX;
             y = outerY + innerY;
@@ -191,9 +197,9 @@ function updateStep() {
                 path.lineTo(start + [x, y]);
             }
 
-            //updateInnerGear
+            //update inner gear
             penPoint.position = view.center + new Point(x, y);
-            innerTestGear.position = view.center + new Point((outerRadius - innerRadius) * Math.cos(i), (outerRadius - innerRadius) * Math.sin(i));
+            innerTestGear.position = view.center + new Point((outerRadius - innerRadius) * Math.cos(rollingAngle), (outerRadius - innerRadius) * Math.sin(rollingAngle));
             innerGearCenter.position = innerTestGear.bounds.center;
             innerTestGear.rotation = toDegrees(-innerAngle);
             penLine.firstSegment.point = innerTestGear.bounds.center;
@@ -201,23 +207,23 @@ function updateStep() {
             var iy = innerTestGear.bounds.center.y - innerRadius * Math.sin(innerAngle);
             penLine.lastSegment.point = new Point(ix, iy);
 
-            i -= speed / n;
+            rollingAngle -= speed / n;
         }
 
-    //if(!changed && Math.abs(i/(2*Math.PI)) > numberOfTurns) { //if you've made the full shape
-    //    running = false;
-    //    $('#play-button').text("Go");
-    //    i = i % (2.0*Math.PI);
-    //    console.log(i);
-    //}
+    if(rollingAngle < targetRollingAngle) { //if you've made the full shape (note: it's rolling "backwards" hence the negative)
+        running = false;
+        $('#play-button').text("Go");
+        rollingAngle = rollingAngle % (2.0*Math.PI);
+        console.log("stopping: ", targetRollingAngle, rollingAngle);
+    }
 }
 
 function updateInnerGear() {
-    var innerAngle = i * ((outerNumTeeth - innerNumTeeth) / innerNumTeeth);
+    var innerAngle = rollingAngle * ((outerNumTeeth - innerNumTeeth) / innerNumTeeth);
 
     //coordinates of center of inner circle
-    var outerX = (outerRadius - innerRadius) * Math.cos(i);
-    var outerY = (outerRadius - innerRadius) * Math.sin(i);
+    var outerX = (outerRadius - innerRadius) * Math.cos(rollingAngle);
+    var outerY = (outerRadius - innerRadius) * Math.sin(rollingAngle);
 
     //coordinates of pen hole inside inner circle
     var innerX = d * Math.cos(innerAngle)
@@ -227,7 +233,7 @@ function updateInnerGear() {
 
     //updateInnerGear
     penPoint.position = view.center + new Point(x, y);
-    innerTestGear.position = view.center + new Point((outerRadius - innerRadius) * Math.cos(i), (outerRadius - innerRadius) * Math.sin(i));
+    innerTestGear.position = view.center + new Point((outerRadius - innerRadius) * Math.cos(rollingAngle), (outerRadius - innerRadius) * Math.sin(rollingAngle));
     innerGearCenter.position = innerTestGear.bounds.center;
     //innerTestGear.rotation = toDegrees(-innerAngle);
     penLine.firstSegment.point = innerTestGear.bounds.center;
@@ -252,6 +258,7 @@ function clearPattern() {
     drawing.removeChildren();
     drawing = new Group();
     cleared = true;
+    updateTargetAngle();
 };
 
 //clear screen
@@ -344,6 +351,7 @@ $('#penup-button').click(function() {
         path.strokeCap = 'round';
         path.strokeWidth = $('#pen-width-slider').val();
         path.strokeColor = newColor;
+        //updateTargetAngle(); //make sure to finish the shape if pen was raised while drawing it
     }
 });
 
