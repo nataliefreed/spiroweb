@@ -1,3 +1,14 @@
+@import url(https://fonts.googleapis.com/css?family=Avenir:400,300);
+
+body {
+    background-color: #E6E6E6;
+    font-family: 'Avenir';
+}
+
+p {
+    color: black;
+}
+
 .spacing-right{
     margin-right: 10px;
 }
@@ -12,4 +23,30 @@
 
 .big-spacing-top{
     margin-top: 50px;
+}
+
+.colors ul{
+    list-style:none; padding:0; margin: 0;
+}
+
+.colors li{
+    margin: 0 0 10px 0;
+}
+
+.colors label{
+    cursor: pointer;
+}
+
+.colors input{display:none;}
+
+.colors input[type="radio"]:checked + .swatch{box-shadow: inset 0 0 0 2px white;}
+
+.swatch{
+    display:inline-block;
+    vertical-align: middle;
+    height: 40px;
+    width: 40px;
+    margin: 0 5px 0 0 ;
+    border: 1px solid #d4d4d4;
+    border-radius: 25px;
 }
