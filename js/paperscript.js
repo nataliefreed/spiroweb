@@ -301,6 +301,44 @@ $('<form method="post" action="' + options.url
     + options.data + '"/></form>').appendTo('body').submit().remove();
 }
 
+function makeGearsExport() {
+    var exportedGears = new Group();
+    exportedGears.remove(); // Remove this from the rendered document
+
+    // Helper function to do common prep steps that we want to do on everything
+    function cloneForExport(item) {
+        clone = item.clone({insert: false});
+        clone.setFillColor(null);
+        clone.setStrokeColor(Color(0,0,0));
+        clone.setStrokeWidth(1);
+        exportedGears.addChild(clone);
+        return clone;
+    };
+
+    // Clone these object and add them to exported view
+    var exInnerGear = cloneForExport(innerTestGear);
+    var exOuterGear = cloneForExport(testGear);
+    var exPenPoint = cloneForExport(penPoint);
+
+    // Update some specific bits and pieces
+    exInnerGear.position = view.center;
+    exInnerGear.rotation = 0.;
+    exOuterGear.position = view.center;
+    exOuterGear.rotation = 0.;
+    exPenPoint.position = view.center + new Point(d, 0.);
+
+    // I couldn't figure out how to get paper.js to export a group and include an svg root + view box
+    // For now, we just manually write some minimal boilerplate to make this work
+    // This assumes view start at 0,0. If not, might need some extra properties
+    var exportWidth = paper.view.bounds.width;
+    var exportHeight = paper.view.bounds.height;
+    svgString = "<svg version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" width=\"" + exportWidth + "\" height=\"" + exportHeight + "\">";
+    svgString += exportedGears.exportSVG({asString: true});
+    svgString += "</svg>";
+
+    return svgString;
+}
+
 //export
 $('#download-button').click(function() {
     //var filename = $('#filename').val();
@@ -309,9 +347,17 @@ $('#download-button').click(function() {
     filename = prompt("Save image as ", "spiro_" + Date.now() + Math.floor(Math.random() * 1000));
     //}
     if(filename.length >= 1) {
-        hideAllExceptDrawing();
-        paper.view.element.toBlob(function(blob) { saveAs(blob, filename + ".png");});
-        showAll();
+        // WIP: For testing, we export the gears svg. Front end should be updated to use a different button/mode for this
+        if(false) {
+            hideAllExceptDrawing();
+            paper.view.element.toBlob(function(blob) { saveAs(blob, filename + ".png");});
+            showAll();
+        }
+        else {
+            svgString = makeGearsExport();
+            var svgBlob = new Blob([svgString], {type: 'image/svg+xml'});
+            saveAs(svgBlob, filename + ".svg");
+        }
     }
 });
 
