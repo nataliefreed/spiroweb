@@ -17,11 +17,11 @@
     <!-- Paper.js -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/paper.js/0.11.4/paper-full.min.js"></script>
 
-    <!-- Load the Paper.js library -->
-    <!--<script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/paper.js/0.9.18/paper-full.min.js"></script>-->
+    <!-- Font Awesome -->
+    <script src="https://kit.fontawesome.com/1a53cc8a99.js" crossorigin="anonymous"></script>
 
-    <!-- Load PaperScript and associate it with myCanvas -->
-    <script type="text/paperscript" src="js/paperscript.js" canvas="myCanvas"></script>
+    <!-- Load PaperScript and associate it with canvas -->
+    <script type="text/paperscript" src="js/paperscript.js" canvas="canvas"></script>
 
     <!-- Color picker -->
     <script src='js/spectrum.js'></script>
@@ -37,138 +37,146 @@
 
 <body>
 
-    <div class="container">
-        <div class="row clearfix">
-            <div class="col-md-12 column">
-                <h1>
-				Spirogator
-			</h1>
-            </div>
-        </div>
-        <div class="row clearfix">
-            <div class="col-md-12 column">
-                <div class="tabbable" id="tabs-372701">
-                    <ul class="nav nav-tabs">
-                        <li class="active">
-                            <a href="#panel-327424" data-toggle="tab">Make Drawings</a>
-                        </li>
-                        <li>
-                            <a href="#panel-106147" data-toggle="tab">Make Algorithms</a>
-                        </li>
-                        <li>
-                            <a href="#panel-106147" data-toggle="tab">Make Gears</a>
-                        </li>
 
-                        <li>
-                            <a href="#panel-106147" data-toggle="tab">What's Going On?</a>
-                        </li>
-                    </ul>
+<!--<a href="#panel-327424" data-toggle="tab">Make Drawings</a>-->
+<!--<a href="#panel-106147" data-toggle="tab">Make Algorithms</a>-->
+<!--<a href="#panel-106147" data-toggle="tab">Make Gears</a>-->
+<!--<a href="#panel-106147" data-toggle="tab">What's Going On?</a>-->
 
-                    <div class="tab-content">
-                        <div class="tab-pane active" id="panel-327424">
+<!--<div id="title-logo">-->
+<!--Spirogator-->
+<!--</div>-->
 
-                            <br>
+<div class="tab">
+    Make Drawings
+</div>
 
-                                <div class="col-md-4 column">
-
-                                    <p>
-                                        <button type="button" id="play-button" class="btn btn-default spacing-right">Go</button>
-
-                                        <button type="button" id="penup-button" class="btn btn-default spacing-right">Pen up</button>
-
-                                        <button type="button" id="clear-button" class="btn btn-default spacing-right">Clear</button>
-
-                                    </p>
-
-                                    <p>
-                                    <form class="form-inline">
-
-                                        <!--<label class="sr-only" for="inlineFormInputGroup">filename</label>-->
-                                        <div class="input-group mb-2 mr-sm-2 mb-sm-0">
-                                            <input type="text" id="filename" maxlength="30" class="form-control" id="inlineFormInputGroup" placeholder="filename">
-                                            <div class="input-group-addon">.png</div>
-                                        </div>
-
-                                        <button type="button" id="download-button" class="btn btn-default">Save</button>
-                                    </form>
-                                    </p>
-
-                                    <div class='sliders'>
-
-                                        <p>Speed: </p>
-                                        <input type="range" id="speed-slider" min="1" max="15" value="3">
-
-
-                                        <p>Outer Gear Teeth: </p>
-                                        <input type="range" id="outer-gear-teeth-slider" value="120" min="6" max="200">                                
-
-
-                                        <p>Inner Gear Teeth: </p>
-                                        <input type="range" class="labeled-slider" id="inner-gear-teeth-slider" value="70" min="6" max="200">
-                                    
-
-                                        <p>Pen Distance (percent of radius): </p>
-                                        <input type="range" id="pen-distance-slider" min="0" max="100" step="1" value="50">
-
-                                        <p>
-                                            <input type='text' id="colorpicker" />
-                                        </p>
-
-                                        <p>Pen Width</p>
-                                        <input type="range" id="pen-width-slider" min="1" max="30" value="2">
-
-
-
-                                    <!-- make fancy range/sliders happen -note: no longer working, JQuery version?-->
-                                    <script>
-                                        $(":range").rangeinput();
-                                    </script>
-
-                                </div>
-
-
-
-                                    <br>
-                                    <p>
-                                        Number of petals: <span id="num-petals"></span>
-                                    </p>
-                                    <p>
-                                        Number of laps inside outer gear: <span id="num-turns"></span>
-                                    </p>
-                            
-                            </div>
-
-                            <div class="col-md-2 column"></div>
-                            <div class="col-md-8 column">
-                                <canvas id="myCanvas" width=650% height=650% style="background:white"></canvas>
-                            </div>
-                                
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="row clearfix">
-            <div class="col-md-12 column text-center big-spacing-top">
-                <p>
-                    This project is by Natalie Freed and Paula Hooper, based on our <a href="http://nataliefreed.github.io/spirogator/">desktop version</a> now ported to the web!
-                </p>
-                <p>
-                We are creating curriculum and tools for learning through digital design fabrication.
-                </p>
-            </div>
-        </div>
+<div class="workspace">
+    <div class="canvas-container">
+        <canvas id="canvas" width="600" height="600"></canvas>
     </div>
 
-    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <div class="controls-sidebar">
 
-    <link href="css/style.css" rel="stylesheet">
+        <button type="button" class="control-button" id="play-button" title="play">
+            <i class="fas fa-play"></i>
+        </button>
 
-    <!-- rangeinput styling -->
-    <link rel="stylesheet" type="text/css" href="css/range.css"/>
+        <button type="button" class="control-button" id="pause-button" style="display: none" title="pause">
+            <i class="fas fa-pause"></i>
+        </button>
 
-    <!-- color picker -->
-    <link rel='stylesheet' href='css/spectrum.css' />
+        <button type="button" class="control-button" id="clear-button" title="clear">
+            <i class="far fa-trash-alt"></i>
+        </button>
+
+        <button type="button" class="control-button" id="download-button" title="download">
+            <i class="fas fa-cloud-download-alt"></i>
+        </button>
+
+        <div class='sliders'>
+
+            <div class="control">
+                <label for="outer-gear-teeth-slider">Outer Gear Teeth:</label>
+                <input type="range" id="outer-gear-teeth-slider" value="120" min="6" max="170">
+            </div>
+
+            <div class="control">
+                <label for="inner-gear-teeth-slider">Inner Gear Teeth:</label>
+                <input type="range" id="inner-gear-teeth-slider" value="70" min="6" max="170">
+            </div>
+
+            <div class="control">
+                <label for="pen-distance-slider">Pen Distance (percent of radius):</label>
+                <input type="range" id="pen-distance-slider" min="0" max="100" step="1" value="50">
+            </div>
+
+
+            <div class="control">
+                <label for="pen-width-slider">Pen Width</label>
+                <input type="range" id="pen-width-slider" min="1" max="30" value="2">
+            </div>
+
+            <div id="colors-panel">
+
+                <div id="color-buttons-container">
+                    <button type="button" class="color-button" style="background-color:#ff0000;"></button>
+                    <button type="button" class="color-button" style="background-color:#ff8713;"></button>
+                    <button type="button" class="color-button" style="background-color:#ffe400;"></button>
+                    <button type="button" class="color-button" style="background-color:#00e355;"></button>
+                    <button type="button" class="color-button" style="background-color:#00d6d6;"></button>
+                    <button type="button" class="color-button" style="background-color:#002aff;"></button>
+                    <!--<button type="button" class="color-button" style="background-color:#7f00ba;"></button>-->
+
+                    <button type="button" class="no-color-button">
+                        <i class="fas fa-times"></i>
+                    </button>
+
+                </div>
+
+                <div id="color-picker-container">
+                    <input type="color" id="pick-color" name="pick-color">
+                    <img src="images/color wheel small.png" id="color-wheel" alt="color wheel">
+                <script>
+
+                </script>
+            </div>
+
+
+        </div>
+
+        <div class="control">
+            <label for="speed-slider">Speed:</label>
+            <input type="range" id="speed-slider" min="1" max="15" value="3">
+        </div>
+
+        <!--<input type='text' id="colorpicker" />-->
+
+
+    </div>
+
+    <div class="info-box">
+        <p>
+            Number of petals: <span id="num-petals"></span>
+        </p>
+        <p>
+            Number of laps inside outer gear: <span id="num-turns"></span>
+        </p>
+    </div>
+</div>
+
+
+
+</div>
+
+<!-- make fancy range/sliders happen -->
+<script>
+    $(":range").rangeinput();
+</script>
+
+<div class="footer">
+
+    <div id="about">
+    <p>
+        This project is by Natalie Freed and Paula Hooper, based on our <a href="http://nataliefreed.github.io/spirogator/">desktop version</a> now ported to the web!
+    </p>
+    <p>
+        We are creating curriculum and tools for learning through digital design fabrication.
+    </p>
+        <p>
+            Check out <a href="http://hightechlowcost.org/guides/spiro-inquiry/" target="_blank">this guide</a> developed in collaboration with the <a href="http://hightechlowcost.org/about/" target="_blank">HTLC project</a>.
+        </p>
+    </div>
+
+</div>
+
+<link href="css/style.css" rel="stylesheet">
+
+<!-- rangeinput styling -->
+<link rel="stylesheet" type="text/css" href="css/range.css"/>
+
+<!-- color picker -->
+<link rel='stylesheet' href='css/spectrum.css' />
 
 
 
