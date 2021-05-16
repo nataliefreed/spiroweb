@@ -339,27 +339,29 @@ function makeGearsExport() {
     return svgString;
 }
 
-//export
-$('#download-button').click(function() {
-    //var filename = $('#filename').val();
-    //if no filename entered in text field
-    //if(filename.length < 1) {
-    filename = prompt("Save image as ", "spiro_" + Date.now() + Math.floor(Math.random() * 1000));
-    //}
+//export drawing
+$('#download-drawing-button').click(function() {
+    filename = prompt("Save drawing as ", "spiro_" + Date.now() + Math.floor(Math.random() * 1000));
     if(filename.length >= 1) {
-        // WIP: For testing, we export the gears svg. Front end should be updated to use a different button/mode for this
-        if(false) {
-            hideAllExceptDrawing();
-            paper.view.element.toBlob(function(blob) { saveAs(blob, filename + ".png");});
-            showAll();
-        }
-        else {
-            svgString = makeGearsExport();
-            var svgBlob = new Blob([svgString], {type: 'image/svg+xml'});
-            saveAs(svgBlob, filename + ".svg");
-        }
+        hideAllExceptDrawing();
+        paper.view.element.toBlob(function (blob) {
+            saveAs(blob, filename + ".png");
+        });
+        showAll();
     }
 });
+
+//export gears
+$('#download-gears-button').click(function() {
+    filename = prompt("Save gear file as ", "spiro_" + Date.now() + Math.floor(Math.random() * 1000));
+    if(filename.length >= 1) {
+        svgString = makeGearsExport();
+        var svgBlob = new Blob([svgString], {type: 'image/svg+xml'});
+        saveAs(svgBlob, filename + ".svg");
+    }
+});
+
+
 
 $('#inner-gear-teeth-slider').change(function() {
     updatePetalsAndTurns();

@@ -56,23 +56,31 @@
         <canvas id="canvas" width="600" height="600"></canvas>
     </div>
 
-    <div class="controls-sidebar">
+    <div id="controls-sidebar">
 
-        <button type="button" class="control-button" id="play-button" title="play">
-            <i class="fas fa-play"></i>
-        </button>
+        <div id="button-bar">
+            <!--<div class="left-buttons">-->
+                <button type="button" class="control-button" id="play-button" title="play">
+                    <i class="fas fa-play"></i>
+                </button>
 
-        <button type="button" class="control-button" id="pause-button" style="display: none" title="pause">
-            <i class="fas fa-pause"></i>
-        </button>
+                <button type="button" class="control-button" id="pause-button" style="display: none" title="pause">
+                    <i class="fas fa-pause"></i>
+                </button>
 
-        <button type="button" class="control-button" id="clear-button" title="clear">
-            <i class="far fa-trash-alt"></i>
-        </button>
+            <button type="button" class="control-button" id="clear-button" title="clear">
+                <i class="far fa-trash-alt"></i>
+            </button>
 
-        <button type="button" class="control-button" id="download-button" title="download">
-            <i class="fas fa-cloud-download-alt"></i>
-        </button>
+            <button type="button" class="img-icon-button" id="download-drawing-button" title="download drawings">
+                <img src="images/spiro download button.png" class="img-icon" alt="download drawing">
+            </button>
+            <button type="button" class="img-icon-button" id="download-gears-button" title="download gears">
+                <img src="images/gear download button.png" class="img-icon" alt="download gears">
+            </button>
+
+
+        </div>
 
         <div class='sliders'>
 
@@ -117,33 +125,33 @@
                 <div id="color-picker-container">
                     <input type="color" id="pick-color" name="pick-color">
                     <img src="images/color wheel small.png" id="color-wheel" alt="color wheel">
-                <script>
+                    <script>
 
-                </script>
+                    </script>
+                </div>
+
+
             </div>
 
+            <div class="control">
+                <label for="speed-slider">Speed:</label>
+                <input type="range" id="speed-slider" min="1" max="15" value="3">
+            </div>
+
+            <!--<input type='text' id="colorpicker" />-->
+
 
         </div>
 
-        <div class="control">
-            <label for="speed-slider">Speed:</label>
-            <input type="range" id="speed-slider" min="1" max="15" value="3">
+        <div class="info-box">
+            <p>
+                Number of petals: <span id="num-petals"></span>
+            </p>
+            <p>
+                Number of laps inside outer gear: <span id="num-turns"></span>
+            </p>
         </div>
-
-        <!--<input type='text' id="colorpicker" />-->
-
-
     </div>
-
-    <div class="info-box">
-        <p>
-            Number of petals: <span id="num-petals"></span>
-        </p>
-        <p>
-            Number of laps inside outer gear: <span id="num-turns"></span>
-        </p>
-    </div>
-</div>
 
 
 
@@ -157,12 +165,12 @@
 <div class="footer">
 
     <div id="about">
-    <p>
-        This project is by Natalie Freed and Paula Hooper, based on our <a href="http://nataliefreed.github.io/spirogator/">desktop version</a> now ported to the web!
-    </p>
-    <p>
-        We are creating curriculum and tools for learning through digital design fabrication.
-    </p>
+        <p>
+            Spirogator is by Natalie Freed and Paula Hooper, based on our <a href="http://nataliefreed.github.io/spirogator/">desktop version</a> now ported to the web!
+        </p>
+        <p>
+            We are creating curriculum and tools for learning through digital design fabrication.
+        </p>
         <p>
             Check out <a href="http://hightechlowcost.org/guides/spiro-inquiry/" target="_blank">this guide</a> developed in collaboration with the <a href="http://hightechlowcost.org/about/" target="_blank">HTLC project</a>.
         </p>

@@ -35,7 +35,7 @@ body {
     /*border-bottom: 2px solid #e6e6e6;*/
 }
 
-.controls-sidebar {
+#controls-sidebar {
     align-content: baseline;
     margin: 0 0 0 30px;
     width: 100%;
@@ -90,16 +90,50 @@ label {
 }
 
 button.control-button {
-    font-size: 24px;
+    font-size: 30px;
     border: none;
     border-radius: 5px;
-    padding: 10px 15px;
+    padding: 10px 14px;
     margin: 0 10px 10px 0;
     background-color: #919191;
-    /*box-shadow: none;*/
     color: white;
     cursor: pointer;
+    vertical-align: top;
 }
+
+.img-icon {
+    width: 40px;
+    height: 40px;
+    display: block;
+}
+
+.img-icon-button {
+    border: none;
+    border-radius: 5px;
+    padding: 7px 7px;
+    margin: 0 10px 10px 0;
+    background-color: #919191;
+    color: white;
+    cursor: pointer;
+    vertical-align: top;
+}
+
+#download-drawing-button {
+    margin-left: 130px;
+}
+
+/*#button-bar {*/
+    /*flex-flow: row;*/
+/*}*/
+
+/*.left-buttons {*/
+    /*display: flex;*/
+/*}*/
+
+/*.right-buttons {*/
+    /*margin-left: auto;*/
+    /*display: flex;*/
+/*}*/
 
 button.color-button {
     width: 40px;
