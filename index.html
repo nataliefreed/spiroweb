@@ -17,8 +17,8 @@
     <!-- Paper.js -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/paper.js/0.11.4/paper-full.min.js"></script>
 
-    <!-- Load the Paper.js library -->
-    <!--<script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/paper.js/0.9.18/paper-full.min.js"></script>-->
+    <!-- Font Awesome -->
+    <script src="https://kit.fontawesome.com/1a53cc8a99.js" crossorigin="anonymous"></script>
 
     <!-- Load PaperScript and associate it with canvas -->
     <script type="text/paperscript" src="js/paperscript.js" canvas="canvas"></script>
@@ -40,8 +40,8 @@
 <!--<div class="container">-->
 <!--<div class="row clearfix">-->
 <!--<div class="col-md-12 column">-->
-<div class="title-logo">
-    <h1>Spirogator</h1>
+<div id="title-logo">
+    Spirogator
 </div>
 <!--</div>-->
 <!--</div>-->
@@ -75,66 +75,105 @@
     </div>
 
     <div class="controls-sidebar">
-        <button type="button" id="play-button">Go</button>
 
-        <button type="button" id="penup-button">Pen up</button>
+        <i class="fas fa-play-circle fa-3x"></i>
 
-        <button type="button" id="clear-button">Clear</button>
+        <button type="button" class="control-button" id="play-button">Go</button>
+
+        <button type="button" class="control-button" id="penup-button">Pen up</button>
+
+        <button type="button" class="control-button" id="clear-button">Clear</button>
+
+        <button type="button" class="control-button" id="download-button">Download</button>
 
         <!--<form class="form-inline">-->
 
-            <!--&lt;!&ndash;<label class="sr-only" for="inlineFormInputGroup">filename</label>&ndash;&gt;-->
-            <!--<div class="input-group mb-2 mr-sm-2 mb-sm-0">-->
-                <!--<input type="text" id="filename" maxlength="30" class="form-control" id="inlineFormInputGroup" placeholder="filename">-->
-                <!--<div class="input-group-addon">.png</div>-->
-            <!--</div>-->
+        <!--&lt;!&ndash;<label class="sr-only" for="inlineFormInputGroup">filename</label>&ndash;&gt;-->
+        <!--<div class="input-group mb-2 mr-sm-2 mb-sm-0">-->
+        <!--<input type="text" id="filename" maxlength="30" class="form-control" id="inlineFormInputGroup" placeholder="filename">-->
+        <!--<div class="input-group-addon">.png</div>-->
+        <!--</div>-->
 
-            <!--<button type="button" id="download-button">Save</button>-->
+        <!--<button type="button" id="download-button">Save</button>-->
         <!--</form>-->
 
         <div class='sliders'>
 
             <div class="control">
-            <label for="outer-gear-teeth-slider">Outer Gear Teeth:</label>
-            <input type="range" id="outer-gear-teeth-slider" value="120" min="6" max="170">
+                <label for="outer-gear-teeth-slider">Outer Gear Teeth:</label>
+                <input type="range" id="outer-gear-teeth-slider" value="120" min="6" max="170">
             </div>
 
             <div class="control">
-            <label for="inner-gear-teeth-slider">Inner Gear Teeth:</label>
-            <input type="range" id="inner-gear-teeth-slider" value="70" min="6" max="170">
+                <label for="inner-gear-teeth-slider">Inner Gear Teeth:</label>
+                <input type="range" id="inner-gear-teeth-slider" value="70" min="6" max="170">
             </div>
 
             <div class="control">
-            <label for="pen-distance-slider">Pen Distance (percent of radius):</label>
-            <input type="range" id="pen-distance-slider" min="0" max="100" step="1" value="50">
+                <label for="pen-distance-slider">Pen Distance (percent of radius):</label>
+                <input type="range" id="pen-distance-slider" min="0" max="100" step="1" value="50">
             </div>
 
-            <input type='text' id="colorpicker" />
 
             <div class="control">
-            <label for="pen-width-slider">Pen Width</label>
-            <input type="range" id="pen-width-slider" min="1" max="30" value="2">
+                <label for="pen-width-slider">Pen Width</label>
+                <input type="range" id="pen-width-slider" min="1" max="30" value="2">
             </div>
+
+            <div id="colors-panel">
+
+                <div id="color-buttons-container">
+                    <button type="button" class="color-button" style="background-color:#ff0000;"></button>
+                    <button type="button" class="color-button" style="background-color:#ff8713;"></button>
+                    <button type="button" class="color-button" style="background-color:#ffe400;"></button>
+                    <button type="button" class="color-button" style="background-color:#00e355;"></button>
+                    <button type="button" class="color-button" style="background-color:#00d6d6;"></button>
+                    <button type="button" class="color-button" style="background-color:#002aff;"></button>
+                    <button type="button" class="color-button" style="background-color:#7f00ba;"></button>
+
+                    <!--<button type="button" class="color-button" style="background-color:#ff00ff;"></button>-->
+                    <!--<button type="button" class="color-button" style="background-color:#be06ff;"></button>-->
+                    <!--<button type="button" class="color-button" style="background-color:#f1b900;"></button>-->
+                    <!--<button type="button" class="color-button" style="background-color:#00a47d;"></button>-->
+                    <!--<button type="button" class="color-button" style="background-color:#117515;"></button>-->
+                    <!--<button type="button" class="color-button" style="background-color:#747676;"></button>-->
+                    <!--<button type="button" class="color-button" style="background-color:#000000;"></button>-->
+
+                </div>
+
+                <div id="color-picker-container">
+                    <input type="color" id="pick-color" name="pick-color" value="#ff0000">
+                    <img src="images/color wheel small.png" id="color-wheel" alt="color wheel">
+                <script>
+
+                </script>
+            </div>
+
 
         </div>
 
-        <div class="info-box">
+        <div class="control">
+            <label for="speed-slider">Speed:</label>
+            <input type="range" id="speed-slider" min="1" max="15" value="3">
+        </div>
+
+        <!--<input type='text' id="colorpicker" />-->
+
+
+    </div>
+
+    <div class="info-box">
         <p>
             Number of petals: <span id="num-petals"></span>
         </p>
         <p>
             Number of laps inside outer gear: <span id="num-turns"></span>
         </p>
-        </div>
     </div>
-
-
-
 </div>
 
-<div class="control">
-    <label for="speed-slider">Speed:</label>
-    <input type="range" id="speed-slider" min="1" max="15" value="3">
+
+
 </div>
 
 <!-- make fancy range/sliders happen -->

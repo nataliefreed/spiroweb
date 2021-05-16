@@ -395,42 +395,49 @@ if(randomInt === 0 || randomInt === 3) { //all but yellow and brown
 }
 var randomStartColor = colorArray[1][randomInt];
 newColor = randomStartColor;
+
 $(document).ready(function() {
-    //configure color picker
-	$("#colorpicker").spectrum({
-        color: randomStartColor,
-        showInput: true,
-        className: "full-spectrum",
-        showInitial: false,
-        showSelectionPalette: true,
-        preferredFormat: "rgb",
-        showPaletteOnly: true,
-        togglePaletteOnly: true,
-        togglePaletteMoreText: 'more',
-        togglePaletteLessText: 'less',
-        localStorageKey: "spiro.colors.saved",
-        clickoutFiresChange: true,
-        //maxPaletteSize: 10,
-        showAlpha: true,
-
-        move: function (color) {
-
-        },
-        show: function () {
-
-        },
-        beforeShow: function () {
-
-        },
-        hide: function () {
-
-        },
-        change: function(color) {
-            newColor = color.toHexString();
-        },
-        palette: colorArray
-    });
+    $("#color-wheel").on('click', function () {
+        $("#pick-color").click();
+    })
 });
+
+//$(document).ready(function() {
+//    //configure color picker
+//	$("#colorpicker").spectrum({
+//        color: randomStartColor,
+//        showInput: true,
+//        className: "full-spectrum",
+//        showInitial: false,
+//        showSelectionPalette: true,
+//        preferredFormat: "rgb",
+//        showPaletteOnly: true,
+//        togglePaletteOnly: true,
+//        togglePaletteMoreText: 'more',
+//        togglePaletteLessText: 'less',
+//        localStorageKey: "spiro.colors.saved",
+//        clickoutFiresChange: true,
+//        //maxPaletteSize: 10,
+//        showAlpha: true,
+//
+//        move: function (color) {
+//
+//        },
+//        show: function () {
+//
+//        },
+//        beforeShow: function () {
+//
+//        },
+//        hide: function () {
+//
+//        },
+//        change: function(color) {
+//            newColor = color.toHexString();
+//        },
+//        palette: colorArray
+//    });
+//});
 
 function radiusToNumTeeth(radius, tooth_w, tooth_h) {
     //angle (that is fraction of full circle corresponding to location of tooth on edge) = 2 * arcsin (chord length / 2 * radius of big circle)
