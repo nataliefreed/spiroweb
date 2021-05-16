@@ -57,10 +57,13 @@ gearGroup.addChild(penLine);
 //create a spiro path
 var path = new Path();
 // Give the stroke a color
-path.strokeColor = 'black';
+var selectedColorButton = $('.color-button').first();
+console.log(selectedColorButton);
+selectedColorButton.addClass('selected');
+var currentColor = selectedColorButton.css('backgroundColor');
+path.strokeColor = currentColor;
 path.strokeCap = 'round';
-var newColor = 'black';
-var newStrokeWidth = path.strokeWidth;
+var newStrokeWidth = 2;
 
 //create a group to store the entire spiro drawing
 var drawing = new Group();
@@ -75,12 +78,11 @@ function addToPatternGroup() {
     drawing = new Group();
     drawing.addChild(rasterDrawing);
 
-    var width = path.strokeWidth;
     path.remove();
     path = new Path();
     path.strokeCap = 'round';
-    path.strokeWidth = width;
-    path.strokeColor = newColor;
+    path.strokeWidth = $('#pen-width-slider').val();;
+    path.strokeColor = currentColor;
 }
 
 var numberOfPetals;
@@ -91,22 +93,14 @@ updateTargetAngle();
 //do every frame
 function onFrame(event) {
 
-    //check if stroke color changed
-    //note: this runs every frame rather than being event driven due to onChange only firing on mouse release
-    //there might be a way to deal with this (oninput?) but I haven't found a cross-browser way yet
-    if (path.strokeColor !== newColor) {
-        addToPatternGroup();
-    }
-    newColor = path.strokeColor;
+    ////check if stroke color changed
+    ////note: this runs every frame rather than being event driven due to onChange only firing on mouse release
+    ////there might be a way to deal with this (oninput?) but I haven't found a cross-browser way yet
 
     //check if strokeWidth changed
     newStrokeWidth = $('#pen-width-slider').val();
     if (path.strokeWidth != newStrokeWidth) {
-        var color = path.strokeColor;
         addToPatternGroup();
-        path.strokeCap = 'round';
-        path.strokeColor = color;
-        path.strokeWidth = newStrokeWidth;
     }
     newStrokeWidth = path.strokeWidth;
 
@@ -174,19 +168,6 @@ function updateTargetAngle() {
 
 function updatePenPoint() {
     updateGears(lastPlottedAngle);
-    //var innerAngle = lastPlottedAngle * ((outerNumTeeth - innerNumTeeth) / innerNumTeeth);
-    //
-    ////coordinates of center of inner circle
-    //var outerX = (outerRadius - innerRadius) * Math.cos(lastPlottedAngle);
-    //var outerY = (outerRadius - innerRadius) * Math.sin(lastPlottedAngle);
-    //
-    ////coordinates of pen hole inside inner circle
-    //var innerX = d * Math.cos(innerAngle);
-    //var innerY = -1.0 * d * Math.sin(innerAngle);
-    //x = outerX + innerX;
-    //y = outerY + innerY;
-    //
-    //penPoint.position = view.center + new Point(x, y);
 }
 
 function updateLine(newRollingAngle) {
@@ -210,7 +191,7 @@ function _updateLineAndGears(newRollingAngle, doGears, drawLine) {
     var innerY = -1.0 * d * Math.sin(innerAngle);
     var x = outerX + innerX;
     var y = outerY + innerY;
-    if(drawLine) {
+    if(drawLine && penDown) {
         path.lineTo(start + [x, y]);
     }
 
@@ -230,7 +211,6 @@ function _updateLineAndGears(newRollingAngle, doGears, drawLine) {
 }
 
 function updateStep() {
-
         var n = 10;
         //compute location of next spiro points within outer circle
         for (var l = 0; l < n; l++) {
@@ -240,7 +220,7 @@ function updateStep() {
                 rollingAngle = targetRollingAngle;
                 updateLine(rollingAngle);
                 running = false;
-                $('#play-button').text("Go");
+                showPlayButton();
                 rollingAngle = rollingAngle % (2.0*Math.PI);
                 break;
             }
@@ -323,11 +303,11 @@ $('<form method="post" action="' + options.url
 
 //export
 $('#download-button').click(function() {
-    var filename = $('#filename').val();
+    //var filename = $('#filename').val();
     //if no filename entered in text field
-    if(filename.length < 1) {
-        filename = prompt("Save image as ", "spiro_" + Date.now() + Math.floor(Math.random() * 1000));
-    }
+    //if(filename.length < 1) {
+    filename = prompt("Save image as ", "spiro_" + Date.now() + Math.floor(Math.random() * 1000));
+    //}
     if(filename.length >= 1) {
         hideAllExceptDrawing();
         paper.view.element.toBlob(function(blob) { saveAs(blob, filename + ".png");});
@@ -356,88 +336,65 @@ function updatePetalsAndTurns() {
 }
 
 $('#play-button').click(function() {
-    var text = $('#play-button').text();
-    if(text === "Stop") {
-        running = false;
-        $('#play-button').text("Go");
-    }
-    else {
-        running = true;
-        $('#play-button').text("Stop");
-    }
+    running = true;
+    showPauseButton();
 });
 
-$('#penup-button').click(function() {
-    var text = $('#penup-button').text();
-    if(text === "Pen up") { //switch to pen up
-        penDown = false;
-        $('#penup-button').text("Pen down");
-    }
-    else {
-        penDown = true;
-        $('#penup-button').text("Pen up");
-        addToPatternGroup();
-        path.strokeCap = 'round';
-        path.strokeWidth = $('#pen-width-slider').val();
-        path.strokeColor = newColor;
-        //updateTargetAngle(); //make sure to finish the shape if pen was raised while drawing it
-    }
+$('#pause-button').click(function() {
+    running = false;
+    showPlayButton();
 });
 
-//color picker
-var colorArray = [["rgb(0, 0, 0)", "rgb(67, 67, 67)", "rgb(102, 102, 102)",
-        "rgb(204, 204, 204)", "rgb(217, 217, 217)","rgb(255, 255, 255)"],
-    ["rgb(152, 0, 0)", "rgb(255, 0, 0)", "rgb(255, 153, 0)", "rgb(255, 255, 0)", "rgb(0, 255, 0)",
-        "rgb(0, 255, 255)", "rgb(74, 134, 232)", "rgb(0, 0, 255)", "rgb(153, 0, 255)", "rgb(255, 0, 255)"]];
-var randomInt = Math.floor(Math.random() * 10);
-if(randomInt === 0 || randomInt === 3) { //all but yellow and brown
-    randomInt = 6; //blue!
+function showPlayButton() {
+    $('#play-button').show();
+    $('#pause-button').hide();
 }
-var randomStartColor = colorArray[1][randomInt];
-newColor = randomStartColor;
 
-$(document).ready(function() {
-    $("#color-wheel").on('click', function () {
-        $("#pick-color").click();
-    })
+function showPauseButton() {
+    $('#play-button').hide();
+    $('#pause-button').show();
+}
+
+//click the hidden color picker when color wheel image is clicked
+$("#color-wheel").on('click', function () {
+    $("#pick-color").click();
 });
 
-//$(document).ready(function() {
-//    //configure color picker
-//	$("#colorpicker").spectrum({
-//        color: randomStartColor,
-//        showInput: true,
-//        className: "full-spectrum",
-//        showInitial: false,
-//        showSelectionPalette: true,
-//        preferredFormat: "rgb",
-//        showPaletteOnly: true,
-//        togglePaletteOnly: true,
-//        togglePaletteMoreText: 'more',
-//        togglePaletteLessText: 'less',
-//        localStorageKey: "spiro.colors.saved",
-//        clickoutFiresChange: true,
-//        //maxPaletteSize: 10,
-//        showAlpha: true,
-//
-//        move: function (color) {
-//
-//        },
-//        show: function () {
-//
-//        },
-//        beforeShow: function () {
-//
-//        },
-//        hide: function () {
-//
-//        },
-//        change: function(color) {
-//            newColor = color.toHexString();
-//        },
-//        palette: colorArray
-//    });
-//});
+$("#pick-color").on('input', function () {
+    if(penDown) {
+        currentColor = this.value;
+        $(selectedColorButton).css('backgroundColor', this.value);
+        penDownAndStartNewLine();
+    }
+});
+
+//one of the color buttons was clicked
+$('.color-button').click(function() {
+    $(selectedColorButton).removeClass('selected');
+    $('.no-color-button').removeClass('selected');
+    selectedColorButton = this;
+    $(selectedColorButton).addClass('selected');
+    currentColor = this.style.backgroundColor;
+
+    penDownAndStartNewLine();
+});
+
+$('.no-color-button').click(function() {
+    penUp();
+    $(selectedColorButton).removeClass('selected');
+    $(this).addClass('selected');
+    selectedColorButton = null;
+});
+
+function penUp() {
+    penDown = false;
+    console.log("pen up");
+}
+
+function penDownAndStartNewLine() {
+    penDown = true;
+    addToPatternGroup();
+}
 
 function radiusToNumTeeth(radius, tooth_w, tooth_h) {
     //angle (that is fraction of full circle corresponding to location of tooth on edge) = 2 * arcsin (chord length / 2 * radius of big circle)
