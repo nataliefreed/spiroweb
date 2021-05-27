@@ -120,8 +120,8 @@ button.control-button {
     border-radius: 5px;
     padding: 7px 7px;
     margin: 0 10px 10px 0;
-    /*background-color: #919191;*/
-    background-color: #676767;
+    background-color: #919191;
+    /*background-color: #676767;*/
     color: white;
     cursor: pointer;
     vertical-align: top;
