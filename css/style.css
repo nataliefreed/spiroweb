@@ -101,6 +101,14 @@ button.control-button {
     vertical-align: top;
 }
 
+#play-button {
+    background-color: #00e355;
+}
+
+#pause-button {
+    background-color: #ff0000;
+}
+
 .img-icon {
     width: 40px;
     height: 40px;
@@ -112,7 +120,8 @@ button.control-button {
     border-radius: 5px;
     padding: 7px 7px;
     margin: 0 10px 10px 0;
-    background-color: #919191;
+    /*background-color: #919191;*/
+    background-color: #676767;
     color: white;
     cursor: pointer;
     vertical-align: top;
@@ -120,6 +129,13 @@ button.control-button {
 
 #download-drawing-button {
     margin-left: 130px;
+}
+
+#export-label {
+    margin-left: 287px;
+    font-size: 16px;
+    font-weight: bold;
+    color: #252525;
 }
 
 /*#button-bar {*/
